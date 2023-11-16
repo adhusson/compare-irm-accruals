@@ -10,6 +10,14 @@ const DURATION_IN_WEEKS = 10;
 // Initial rate at target (per year)
 const INITIAL_RATE = 2;
 
+// Accrual each period for DURATION_IN_WEEKS weeks
+const generateAccruals = () => {
+  accrue('Every 1M seconds',1e6);
+  accrue('Every 600k seconds',600e3);
+  accrue('Every 200k seconds',200e3);
+  accrue('Every 20k seconds',20e3);
+}
+
 const YEAR = 365*24*60*60;
 // Speed factor
 const Kp = M.evaluate(`50/${YEAR}`);
@@ -148,46 +156,13 @@ const serializeRun = run => run.map(([t,v]) => {
 serializedRuns.runs[serializedRuns.baseRunName] = serializeRun(baseRun);
 
 // Make a run that updates every period
-const periodRun = (name,period) => {
+var accrue = (name,period) => {
   const run = runStep(duration,period);
   compare(name,run,"full",{borrow: baseRun.at(-1)[1]});
   serializedRuns.runs[name] = serializeRun(run.borrows);
 }
 
-  // const mborrow = {borrow: durationBorrows.at(-1)[1]};
 
-periodRun('Every 1M seconds',1e6);
-periodRun('Every 600k seconds',600e3);
-periodRun('Every 200k seconds',200e3);
-periodRun('Every 20k seconds',20e3);
+generateAccruals();
 
-fs.writeFileSync("./compounds.json",JSON.stringify(serializedRuns));
-  
-  
-  // {
-  // "Full duration": serializeCompounds(durationBorrows),
-  // "Every 10M seconds": serializeCompounds(m10M.borrows),
-  // "Every 1M seconds": serializeCompounds(m1M.borrows),
-  // "Every 600k seconds": serializeCompounds(m600k.borrows),
-  // "Every 200k seconds": serializeCompounds(m200k.borrows),
-  // "Every 20k seconds": serializeCompounds(m20k.borrows),
-  // "Every 1k seconds": serializeCompounds(m1k.borrows),
-  // "Every 300 seconds": serializeCompounds(m300.borrows),
-  // "Every 60 seconds": serializeCompounds(m60.borrows),
-  // "Every 10 seconds": serializeCompounds(m10.borrows)
-// }));
-
-
-
-
-
-/* Not used
-const trend = runStep(weeks(1),weeks(1)).borrows;
-for (let i = 2;i<50;i++) {
-  trend.push(runStep(weeks(i),weeks(i)).borrows.at(-1));
-}
-
-fs.writeFileSync("./trend.json",JSON.stringify({
-  "sequence": serializeCompounds(trend)
-}));
-*/
+fs.writeFileSync("./runs.json",JSON.stringify(serializedRuns));

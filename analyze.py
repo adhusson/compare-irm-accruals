@@ -2,7 +2,7 @@
 import json
 import matplotlib.pyplot as plt
 
-with open('compounds.json', 'r') as file:
+with open('runs.json', 'r') as file:
     json_data = json.load(file)
 
 initial_rate = json_data['initialRate']

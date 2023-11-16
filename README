@@ -1,0 +1,22 @@
+INSTALL
+
+    pip install matplotlib
+    npm i
+
+USE
+
+    To generate the data points
+
+        node compare.js 
+
+    To plot them
+
+        python analyze.py
+
+CONFIGURE
+
+    Modify DURATION_IN_WEEKS to change the total duration
+
+    Modify INITIAL_RATE to change the initial condition
+
+    Modify calls to accrue in generateAccruals to try scenarios
